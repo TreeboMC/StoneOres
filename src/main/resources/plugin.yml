@@ -1,0 +1,17 @@
+name: StoneOres
+version: ${project.version}
+main: me.shakeforprotein.stoneores.StoneOres
+prefix: [StoneOres ${project.version}]
+authors: [ShakeforProtein]
+description: Intended as a skyblock ore generation plugin with more configurability.
+website: http://www.treebomc.com
+
+depend: [BentoBox]
+
+commands:
+  stoneores:
+    description: StoneOres commands.
+    usage: /<command> <subcommand>
+  ores:
+    description: StoneOres commands.
+    usage: /<command> <subcommand>
