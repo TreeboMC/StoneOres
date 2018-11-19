@@ -6,13 +6,12 @@
 
     <groupId>me.ShakeforProtein</groupId>
     <artifactId>StoneOres</artifactId>
-    <version>0.11.2</version>
+    <version>0.9.1</version>
     <packaging>jar</packaging>
 
     <name>StoneOres</name>
 
-    <description>Intended as a skyblock ore generation plugin with more configurability. Now with restored commands
-    </description>
+    <description>Intended as a skyblock ore generation plugin with more configurability. Now with restored commands</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
