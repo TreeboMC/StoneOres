@@ -6,9 +6,6 @@ import java.io.IOException;
 
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -62,8 +59,20 @@ public class StoneOres extends JavaPlugin {
         String effWorld2 = currentWorld;
         effWorld2.replace("_the_end", "_world").replace("_nether", "_world");
 
+        if (((cmd.getName().equalsIgnoreCase("stoneores")) || (cmd.getName().equalsIgnoreCase("ores")) ) && (args.length == 1) && (args[0].equalsIgnoreCase("all")) && (sender instanceof  Player)){
+            getAllGeneratorGroups(player);
+            }
 
-        if ((cmd.getName().equalsIgnoreCase("stoneores") || cmd.getName().equalsIgnoreCase("ores")) && sender instanceof Player) {
+        else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (player.hasPermission("stoneores.reload")) {
+                reloadConfig();
+                player.sendMessage(getLang().getString(mp + "configReloaded").replace('&', '§'));
+            } else {
+                player.sendMessage(getLang().getString(mp + "noPermission").replace('&', '§'));
+            }
+        }
+
+        else if ((cmd.getName().equalsIgnoreCase("stoneores") || cmd.getName().equalsIgnoreCase("ores")) && sender instanceof Player) {
             bentoCallLevel(player.getWorld(), player);
     // to set a delay while it runs the level command
             getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
@@ -92,14 +101,7 @@ public class StoneOres extends JavaPlugin {
                                 i++;
                             }
                         }
-                        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-                            if (player.hasPermission("stoneores.reload")) {
-                                reloadConfig();
-                                player.sendMessage(getLang().getString(mp + "configReloaded").replace('&', '§'));
-                            } else {
-                                player.sendMessage(getLang().getString(mp + "noPermission").replace('&', '§'));
-                            }
-                        } else {
+
 
                             String hasPermission = null;
                             int percent = 0;
@@ -115,14 +117,8 @@ public class StoneOres extends JavaPlugin {
                                     double percentDouble = ((double) percent);
                                     player.sendMessage("§3" + item + ": §f" + Math.rint((percentDouble / percentCalc) * 100) + "%");
                                 }
-
                         }
-
                     }
-
-                }
-
-
             }, 40L);
         } else {
             player.sendMessage("§3  Sorry, that command does not work in this world");
@@ -183,6 +179,27 @@ public class StoneOres extends JavaPlugin {
         }
 
 
+    public void getAllGeneratorGroups(Player player){
+
+        String worldStr = player.getWorld().getName();
+        String tierKeysConf = getConfig().getConfigurationSection("world." + worldStr + ".tiers").getKeys(false).toString();
+        String[] tierKeys = tierKeysConf.substring(1, tierKeysConf.length() - 1).replaceAll("\\s+", "").split(",");
+        String generatorGroup = "default";
+        for (String item : tierKeys) {
+            Integer tierPoints = getConfig().getInt("world." + worldStr + ".tiers." + item.trim());
+            player.sendMessage(" ");
+            player.sendMessage(" ");
+            player.sendMessage("The generator - " + item + " - requires an island level of " + tierPoints + " and generates ores at the following rates");
+            generatorGroup = getGeneratorGroup(player.getWorld(), tierPoints + 1);
+            Integer percent, percentCalc = 0;
+            for (String item2 : getConfig().getConfigurationSection("world." + worldStr + ".blocktypes." + generatorGroup).getKeys(false)) {
+                percent = getConfig().getInt("world." + worldStr + ".blocktypes." + generatorGroup + "." + item2);
+                percentCalc += percent;
+                double percentDouble = ((double) percent);
+                player.sendMessage("§3" + item2 + ": §f" + Math.rint((percentDouble / percentCalc) * 100) + "%");
+            }
+        }
+    }
 
     public String getGeneratorGroup(World world, int isLvl){
         String worldStr = world.getName();
