@@ -1,41 +1,48 @@
 world:
   BSkyBlock_world_the_end:
+    lvlcommand: 'is level'
     tiers:
       default: 0
     blocktypes:
       default:
         COBBLESTONE: 1
   BSkyBlock_world_nether:
+    lvlcommand: 'is level'
     tiers:
       default: 0
     blocktypes:
       default:
         COBBLESTONE: 1
   BSkyBlock_world: #The world name of the world you want the generator to function on.
+    lvlcommand: 'is level'
     tiers: #List of tiers and island levels required to access them.
       default: 0 #There must always be a default tier
     blocktypes:
       default: #blocktype groups must have the same name as their tier
         COBBLESTONE: 1 #List of Bukkit standard block names and their weight for calculations
   AcidIsland_world_the_end:
+    lvlcommand: 'ai level'
     tiers:
       default: 0
     blocktypes:
       default:
         COBBLESTONE: 1
   AcidIsland_world_nether:
+    lvlcommand: 'ai level'
     tiers:
       default: 0
     blocktypes:
       default:
         COBBLESTONE: 1
   AcidIsland_world:
+    lvlcommand: 'ai level'
     tiers:
       default: 0
     blocktypes:
       default:
         COBBLESTONE: 1
   Example_world:
+    lvlcommand: 'ex level'
     tiers:
       default: 0
       tiera: 100

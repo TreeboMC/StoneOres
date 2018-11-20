@@ -26,7 +26,9 @@ public class StoneOres extends JavaPlugin {
     private boolean debug = true;
     private BentoBox api;
     private File langConfig = null;
+    private File playerFile = null;
     private YamlConfiguration lang = new YamlConfiguration();
+    private YamlConfiguration playerYaml = new YamlConfiguration();
 
     @Override
     public void onEnable() {
@@ -149,6 +151,10 @@ public class StoneOres extends JavaPlugin {
         return lang;
     }
 
+    public YamlConfiguration getPlayerYaml(){
+        return playerYaml;
+    }
+
     public void saveLang(){
         try{lang.save(langConfig);}
         catch (IOException e){e.printStackTrace();}
@@ -157,44 +163,32 @@ public class StoneOres extends JavaPlugin {
 
     public void bentoCallLevel(World world, Player p){
         String worldString = world.getName();
-        if (worldString.equalsIgnoreCase("AcidIsland_world")){p.performCommand("ai level");}
-        if (worldString.equalsIgnoreCase("BSkyBlock_world")){p.performCommand("is level");}
-        if (worldString.equalsIgnoreCase("SkyGrid_world")){p.performCommand("sg level");}
+        String commandString = getConfig().getString("world."+worldString+".lvlcommand");
+        p.performCommand(commandString);
     }
 
     public int readPlayerLevelYaml(UUID ownerID, World world){
-
-        //TODO: Replace this method to use yaml interpreter instead of relying on file to string
-        Bukkit.broadcast("playerFile - ","");
-        File playerFile = new File(Bukkit.getPluginManager().getPlugin("StoneOres").getDataFolder().getParent() + "/BentoBox/database/LevelsData", ownerID.toString() + ".yml");
-
-        String fileOutput = "";
-        String worldStr = world.getName();
-        try {fileOutput = readFile(playerFile.toString());}
-        catch (IOException IO){}
-
-        if ((fileOutput != null) && (fileOutput != "") && (fileOutput.contains(worldStr+ ":"))) {
-            if(fileOutput.length() < 1) {
-                playerFile.delete();
-            }
-            Pattern p = Pattern.compile(worldStr + ": \\d+");
-            Matcher m = p.matcher(fileOutput);
-            m.find();
-            String tempLevel = m.group().split(": ")[1];
-            return Integer.parseInt(tempLevel);
+        playerFile = new File(Bukkit.getPluginManager().getPlugin("StoneOres").getDataFolder().getParent() + "/BentoBox/database/LevelsData", ownerID.toString() + ".yml");
+        playerYaml = new YamlConfiguration();
+        mkdir(playerFile);
+        try {
+            playerYaml.load(playerFile);
         }
-        else{
-            return 1;
+        catch(InvalidConfigurationException e){e.printStackTrace();}
+        catch(FileNotFoundException e){e.printStackTrace();}
+        catch(IOException e){e.printStackTrace();}
+        int islandLevel = getPlayerYaml().getInt("levels." + world.getName(), 0);
+        if (islandLevel < 1){islandLevel = 0;}
+        return islandLevel;
         }
-    }
+
 
 
     public String getGeneratorGroup(World world, int isLvl){
         String worldStr = world.getName();
         String tierKeysConf = getConfig().getConfigurationSection("world." + worldStr + ".tiers").getKeys(false).toString();
         String[] tierKeys = tierKeysConf.substring(1, tierKeysConf.length() - 1).replaceAll("\\s+", "").split(",");
-        String islandTier = "";
-        Integer dummyInt = 0;
+        String islandTier = "default";
         for (String item : tierKeys) {
             Integer tierPoints = getConfig().getInt("world." + worldStr + ".tiers." + item.trim());
             if (tierPoints < isLvl){
