@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.util.Scanner;
+
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -20,7 +20,6 @@ import world.bentobox.bentobox.BentoBox;
 
 
 public class StoneOres extends JavaPlugin {
-    private boolean debug = true;
     private BentoBox api;
     private File langConfig = null;
     private File playerFile = null;
@@ -138,9 +137,7 @@ public class StoneOres extends JavaPlugin {
         try {
             lang.load(langConfig);
         }
-        catch(InvalidConfigurationException e){e.printStackTrace();}
-        catch(FileNotFoundException e){e.printStackTrace();}
-        catch(IOException e){e.printStackTrace();}
+        catch(InvalidConfigurationException | IOException e){e.printStackTrace();}
     }
 
     public YamlConfiguration getLang(){
@@ -210,8 +207,6 @@ public class StoneOres extends JavaPlugin {
             Integer tierPoints = getConfig().getInt("world." + worldStr + ".tiers." + item.trim());
             if (tierPoints < isLvl){
                 islandTier = item.trim();
-                if(debug){Bukkit.broadcast("island Tier = " + islandTier, "*");}
-
             }
         }
         return islandTier;
@@ -220,21 +215,5 @@ public class StoneOres extends JavaPlugin {
 
     public String[] getBlockList(World world, String genGroup){
         return getConfig().getConfigurationSection("world." + world.getName() + ".blocktypes." + genGroup).getKeys(false).toString().substring(1, getConfig().getConfigurationSection("world." + world.getName() + ".blocktypes." + genGroup).getKeys(false).toString().length() - 1).replaceAll("\\s+", "").split(",");
-    }
-
-    public String readFile(String pathname) throws IOException {
-        File file = new File(pathname);
-        StringBuilder fileContents = new StringBuilder((int)file.length());
-        Scanner scanner = new Scanner(file);
-        String lineSeparator = System.getProperty("line.separator");
-
-        try {
-            while(scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine() + lineSeparator);
-            }
-            return fileContents.toString();
-        } finally {
-            scanner.close();
-        }
     }
 }
