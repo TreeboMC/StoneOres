@@ -5,6 +5,7 @@ prefix: [StoneOres ${project.version}]
 authors: [ShakeforProtein]
 description: Intended as a skyblock ore generation plugin with more configurability.
 website: http://www.treebomc.com
+api-version: 1.13
 
 depend: [BentoBox]
 
@@ -14,4 +15,7 @@ commands:
     usage: /<command> <subcommand>
   ores:
     description: StoneOres commands.
+    usage: /<command> <subcommand>
+  value:
+    description: StoneOres bentobox value grab.
     usage: /<command> <subcommand>
