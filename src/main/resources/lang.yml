@@ -1,6 +1,6 @@
 en:
   messages:
-    configReloaded: '&aThe configuration has been reloaded.'
+    configReloaded: '&aThe configuration and language files have been reloaded.'
     noPermission: '&cYou do not have access to this command.'
     hasTier: '&eThe island you are standing on has the access to generator tier &c{permission}&e.'
     rates: '&eThis island can generate:'

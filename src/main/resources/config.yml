@@ -87,3 +87,4 @@ world:
         REDSTONE_ORE: 400
 
 language: en
+debug: false
