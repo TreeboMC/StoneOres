@@ -52,130 +52,142 @@ public class StoneOres extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
         String Language = getConfig().getString("language");
         String mp = Language + ".messages.";
         api = BentoBox.getInstance();
-        Player player = (Player) sender;
-        Player p = player;
-        int islandLevel = 0;
-        String currentWorld = player.getLocation().getWorld().getName();
-        String effWorld2 = currentWorld;
-        effWorld2.replace("_the_end", "_world").replace("_nether", "_world");
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Player p = player;
+            int islandLevel = 0;
+            String currentWorld = player.getLocation().getWorld().getName();
+            String effWorld2 = currentWorld;
+            effWorld2.replace("_the_end", "_world").replace("_nether", "_world");
 
-        if (cmd.getName().equalsIgnoreCase("value")) {
-            HumanEntity hE = (HumanEntity) sender;
-            Integer itemValue = -1;
-            Integer itemLimit = -1;
-            String blockLimit = "";
-            String itemInHand = hE.getInventory().getItemInMainHand().getType().toString();
-            try {
-                itemValue = api.getAddonsManager().getAddonByName("Level").get().getConfig().getInt("blocks." + itemInHand);
-                itemLimit = api.getAddonsManager().getAddonByName("Level").get().getConfig().getInt("limits." + itemInHand);
-                if (itemLimit > 0) {
-                    blockLimit = " but is worth nothing after " + itemLimit + " blocks of " + itemInHand + " are on your island";
-                }
-            } catch (NullPointerException e) {
-            }
-            if (itemValue < 1) {
-                itemValue = 0;
-            }
-            p.sendMessage(itemInHand + " has a value of " + itemValue + blockLimit);
-
-        } else if ((cmd.getName().equalsIgnoreCase("stoneores")) || (cmd.getName().equalsIgnoreCase("ores"))) {
-            if (args.length == 3 && args[0].equalsIgnoreCase("query")) {
-                if (p.hasPermission("stoneores.reload")) {
-                    if (args[1].equalsIgnoreCase("int")) {
-                        p.sendMessage("" + getConfig().getInt("" + args[2]));
-                    } else if (args[1].equalsIgnoreCase("string")) {
-                        p.sendMessage(getConfig().getString(args[2]));
+            if (cmd.getName().equalsIgnoreCase("value")) {
+                HumanEntity hE = (HumanEntity) sender;
+                Integer itemValue = -1;
+                Integer itemLimit = -1;
+                String blockLimit = "";
+                String itemInHand = hE.getInventory().getItemInMainHand().getType().toString();
+                try {
+                    itemValue = api.getAddonsManager().getAddonByName("Level").get().getConfig().getInt("blocks." + itemInHand);
+                    itemLimit = api.getAddonsManager().getAddonByName("Level").get().getConfig().getInt("limits." + itemInHand);
+                    if (itemLimit > 0) {
+                        blockLimit = " but is worth nothing after " + itemLimit + " blocks of " + itemInHand + " are on your island";
                     }
+                } catch (NullPointerException e) {
                 }
-            }
-            if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("all")) {
-                    getAllGeneratorGroups(player);
-                } else if (args[0].equalsIgnoreCase("reload")) {
-                    if (player.hasPermission("stoneores.reload")) {
-                        try {
-                            lang.load(langConfig);
-                        } catch (InvalidConfigurationException | IOException e) {
+                if (itemValue < 1) {
+                    itemValue = 0;
+                }
+                p.sendMessage(itemInHand + " has a value of " + itemValue + blockLimit);
+
+            } else if ((cmd.getName().equalsIgnoreCase("stoneores")) || (cmd.getName().equalsIgnoreCase("ores"))) {
+                if (args.length == 3 && args[0].equalsIgnoreCase("query")) {
+                    if (p.hasPermission("stoneores.reload")) {
+                        if (args[1].equalsIgnoreCase("int")) {
+                            p.sendMessage("" + getConfig().getInt("" + args[2]));
+                        } else if (args[1].equalsIgnoreCase("string")) {
+                            p.sendMessage(getConfig().getString(args[2]));
                         }
-                        reloadConfig();
-                        player.sendMessage(getLang().getString(mp + "configReloaded").replace('&', '§'));
-                    } else {
-                        player.sendMessage(getLang().getString(mp + "noPermission").replace('&', '§'));
                     }
-                } else if (args[0].equalsIgnoreCase("debug")) {
-                    if (player.hasPermission("stoneores.reload")) {
-                        if (getConfig().get("debug") == "false") {
-                            getConfig().set("debug", "true");
-                            p.sendMessage("debug enabled");
+                }
+                if (args.length == 1) {
+                    if (args[0].equalsIgnoreCase("all")) {
+                        getAllGeneratorGroups(player);
+                    } else if (args[0].equalsIgnoreCase("reload")) {
+                        if (player.hasPermission("stoneores.reload")) {
+                            try {
+                                lang.load(langConfig);
+                            } catch (InvalidConfigurationException | IOException e) {
+                            }
+                            reloadConfig();
+                            player.sendMessage(getLang().getString(mp + "configReloaded").replace('&', '§'));
                         } else {
-                            getConfig().set("debug", "false");
-                            p.sendMessage("debug Disabled");
+                            player.sendMessage(getLang().getString(mp + "noPermission").replace('&', '§'));
                         }
+                    } else if (args[0].equalsIgnoreCase("debug")) {
+                        if (player.hasPermission("stoneores.reload")) {
+                            if (getConfig().get("debug") == "false") {
+                                getConfig().set("debug", "true");
+                                p.sendMessage("debug enabled");
+                            } else {
+                                getConfig().set("debug", "false");
+                                p.sendMessage("debug Disabled");
+                            }
+                        }
+                    } else if (args[0].equalsIgnoreCase("version")) {
+                        p.sendMessage("StoneOres - " + this.getDescription().getVersion());
                     }
-                } else if (args[0].equalsIgnoreCase("version")) {
-                    p.sendMessage("StoneOres - " + this.getDescription().getVersion());
-                }
-            } else {
-                bentoCallLevel(player.getWorld(), player);
-                // to set a delay while it runs the level command
-                getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                    public void run() {
-                        Debug("Debug mode enabled", p);
-                        String generatorGroup = "default";
-                        Debug("Generator group = " + generatorGroup, p);
-                        UUID thisIslandOwner = api.getIslands().getIslandAt(player.getLocation()).get().getOwner();
-                        Debug("thisIslandOwner = " + thisIslandOwner, p);
+                } else {
+                    bentoCallLevel(player.getWorld(), player);
+                    // to set a delay while it runs the level command
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                        public void run() {
+                            Debug("Debug mode enabled", p);
+                            String generatorGroup = "default";
+                            Debug("Generator group = " + generatorGroup, p);
+                            UUID thisIslandOwner = api.getIslands().getIslandAt(player.getLocation()).get().getOwner();
+                            Debug("thisIslandOwner = " + thisIslandOwner, p);
 
-                        generatorGroup = getGeneratorGroup(player.getWorld(), readPlayerLevelYaml(thisIslandOwner, player.getWorld()));
-                        Debug("Calculated generator group is " + generatorGroup, p);
-                        String[] blocksList = getBlockList(player.getWorld(), generatorGroup);
-                        Debug("Blockslist is " + blocksList, p);
+                            generatorGroup = getGeneratorGroup(player.getWorld(), readPlayerLevelYaml(thisIslandOwner, player.getWorld()));
+                            Debug("Calculated generator group is " + generatorGroup, p);
+                            String[] blocksList = getBlockList(player.getWorld(), generatorGroup);
+                            Debug("Blockslist is " + blocksList, p);
 
 
-                        if (getConfig().getConfigurationSection("world." + currentWorld) != null) {
+                            if (getConfig().getConfigurationSection("world." + currentWorld) != null) {
 
 
-                            int percentCalc = 0, arrayId = 0, i = 0;
-                            String[] blocktypes = new String[blocksList.length];
-                            String[] cases = new String[50000];
+                                int percentCalc = 0, arrayId = 0, i = 0;
+                                String[] blocktypes = new String[blocksList.length];
+                                String[] cases = new String[50000];
 
 
-                            for (String item : blocksList) {
-                                percentCalc += getConfig().getInt("world." + currentWorld + ".blocktypes." + generatorGroup + "." + item);
-                                blocktypes[arrayId] = item;
-                                arrayId++;
+                                for (String item : blocksList) {
+                                    percentCalc += getConfig().getInt("world." + currentWorld + ".blocktypes." + generatorGroup + "." + item);
+                                    blocktypes[arrayId] = item;
+                                    arrayId++;
 
-                                while (i < percentCalc) {
-                                    cases[i] = item;
-                                    i++;
+                                    while (i < percentCalc) {
+                                        cases[i] = item;
+                                        i++;
+                                    }
+                                }
+
+
+                                String hasPermission = null;
+                                int percent = 0;
+
+
+                                if (generatorGroup != null) {
+                                    Debug("Generator permission granted", p);
+                                    player.sendMessage(getLang().getString(mp + "hasTier").replace("{permission}", generatorGroup).replace('&', '§'));
+                                    player.sendMessage(getLang().getString(mp + "rates").replace('&', '§'));
+
+                                }
+                                for (String item : getConfig().getConfigurationSection("world." + currentWorld + ".blocktypes." + generatorGroup).getKeys(false)) {
+                                    percent = getConfig().getInt("world." + currentWorld + ".blocktypes." + generatorGroup + "." + item);
+                                    double percentDouble = ((double) percent);
+                                    player.sendMessage("§3" + item + ": §f" + Math.rint((percentDouble / percentCalc) * 100) + "%");
                                 }
                             }
-
-
-                            String hasPermission = null;
-                            int percent = 0;
-
-
-                            if (generatorGroup != null) {
-                                Debug("Generator permission granted", p);
-                                player.sendMessage(getLang().getString(mp + "hasTier").replace("{permission}", generatorGroup).replace('&', '§'));
-                                player.sendMessage(getLang().getString(mp + "rates").replace('&', '§'));
-
-                            }
-                            for (String item : getConfig().getConfigurationSection("world." + currentWorld + ".blocktypes." + generatorGroup).getKeys(false)) {
-                                percent = getConfig().getInt("world." + currentWorld + ".blocktypes." + generatorGroup + "." + item);
-                                double percentDouble = ((double) percent);
-                                player.sendMessage("§3" + item + ": §f" + Math.rint((percentDouble / percentCalc) * 100) + "%");
-                            }
                         }
-                    }
-                }, 40L);
+                    }, 40L);
+                }
+            } else {
+                player.sendMessage("§3  Sorry, that command does not work in this world");
             }
-        } else {
-            player.sendMessage("§3  Sorry, that command does not work in this world");
+
+
+        } else if (((cmd.getName().equalsIgnoreCase("ores")) || cmd.getName().equalsIgnoreCase("stoneores")) && (args.length == 1) && (args[0].equalsIgnoreCase("reload"))) {
+            try {
+                lang.load(langConfig);
+            } catch (InvalidConfigurationException | IOException e) {
+            }
+            reloadConfig();
+            System.out.println(getLang().getString(mp + "configReloaded").replace('&', '§'));
         }
 
         return true;
@@ -231,7 +243,7 @@ public class StoneOres extends JavaPlugin {
         } catch (InvalidConfigurationException | IOException e) {
         }
 
-        int islandLevel = getPlayerYaml().getInt("levels." + world.getName(), 0);
+        int islandLevel = getPlayerYaml().getInt("levels." + world.getName().replace("_the_end", "").replace("_nether", ""), 0);
         if (islandLevel < 1) {
             islandLevel = 0;
         }
