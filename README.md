@@ -8,7 +8,8 @@ Compatible with BentoBox for Acid Island & BSkyBlock (Planned SkyGrid Support)
 
 ## Permisions
 ```
-stoneores.reload    -  Reload the plugin config files
+stoneores.reload    -  Reload the plugin config files. (Defaults to OP)
+stoneores.updateCheck - Will notify the user of the current version on joining. (Defaults to OP)
 ```
 
 ## Commands
