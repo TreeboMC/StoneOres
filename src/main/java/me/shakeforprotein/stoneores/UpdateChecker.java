@@ -1,6 +1,5 @@
 package me.shakeforprotein.stoneores;
 
-import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,8 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class UpdateChecker {
 
@@ -24,6 +22,7 @@ public class UpdateChecker {
         this.pl = pl;
     }
 
+    public String requiredPermission = "stoneores.updatechecker";
 
     public Boolean getCheckDownloadURL(Player p) {
         // Code courtesy of Spigot user Ftbastler

@@ -1,6 +1,7 @@
 package me.shakeforprotein.stoneores;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -32,8 +33,25 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent e) {
-        if (e.getPlayer().hasPermission("stoneores.updatecheck")) {
-            uc.getCheckDownloadURL(e.getPlayer());
+        if (e.getPlayer().hasPermission(uc.requiredPermission)) {
+            if ((plugin.getConfig().getString(e.getPlayer().getName()) == null) || ((plugin.getConfig().getString(e.getPlayer().getName()) != null) && (plugin.getConfig().getString(e.getPlayer().getName()).equalsIgnoreCase("false")))) {
+                uc.getCheckDownloadURL(e.getPlayer());
+                plugin.getConfig().set(e.getPlayer().getName(), "true");
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                    public void run() {
+                        plugin.getConfig().set(e.getPlayer().getName(), "false");
+                    }
+                }, 60L);
+            } else {
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                    public void run() {
+                        try {
+                            plugin.getConfig().set(e.getPlayer().getName(), null);
+                        } catch (NullPointerException e) {
+                        }
+                    }
+                }, 80L);
+            }
         }
     }
 

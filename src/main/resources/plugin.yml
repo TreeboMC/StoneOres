@@ -21,7 +21,7 @@ commands:
     usage: /<command> <subcommand>
 
 permissions:
-  stoneores.updateCheck:
+  stoneores.updatechecker:
     description: 'Issues update check when player logs in'
     default: op
   stoneores.reload:
