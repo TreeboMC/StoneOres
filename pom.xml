@@ -6,7 +6,7 @@
 
     <groupId>me.ShakeforProtein</groupId>
     <artifactId>StoneOres</artifactId>
-    <version>0.11.4</version>
+    <version>0.12.0</version>
     <packaging>jar</packaging>
 
     <name>StoneOres</name>
