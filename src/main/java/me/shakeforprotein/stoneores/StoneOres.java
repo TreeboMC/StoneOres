@@ -1,10 +1,10 @@
 package me.shakeforprotein.stoneores;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -20,26 +20,30 @@ import org.bukkit.entity.Player;
 import world.bentobox.bentobox.BentoBox;
 
 
+
 public class StoneOres extends JavaPlugin {
     private BentoBox api;
+    private UpdateChecker uc;
     private File langConfig = null;
     private File playerFile = null;
     private YamlConfiguration lang = new YamlConfiguration();
     private YamlConfiguration playerYaml = new YamlConfiguration();
 
+
     @Override
     public void onEnable() {
         // Plugin startup logic
         Boolean debug = false;
-
         System.out.println("StoneOres is Starting");
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getConfig().options().copyDefaults(true);
+        getConfig().set("version", this.getDescription().getVersion());
         saveConfig();
         langConfig = new File(getDataFolder(), "lang.yml");
         mkdir(langConfig);
         loadYamls();
-
+        this.uc = new UpdateChecker(this);
+        uc.getCheckDownloadURL();
         System.out.println("StoneOres has finished loading");
     }
 
@@ -298,4 +302,5 @@ public class StoneOres extends JavaPlugin {
             p.sendMessage(str + "");
         }
     }
+
 }

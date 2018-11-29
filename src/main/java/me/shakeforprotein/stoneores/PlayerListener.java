@@ -9,6 +9,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import world.bentobox.bentobox.BentoBox;
 
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 public class PlayerListener implements Listener {
     private StoneOres plugin;
+    private UpdateChecker uc;
     private BentoBox api;
 
 
@@ -25,8 +27,15 @@ public class PlayerListener implements Listener {
         instance.getServer().getPluginManager().registerEvents(this, instance);
         BentoBox.getInstance().getServer().getPluginManager().registerEvents(this, instance);
         this.plugin = instance;
+        this.uc = new UpdateChecker(instance);
     }
 
+    @EventHandler
+    public void onPlayerJoinEvent(PlayerJoinEvent e) {
+        if (e.getPlayer().hasPermission("stoneores.updatecheck")) {
+            uc.getCheckDownloadURL(e.getPlayer());
+        }
+    }
 
     @EventHandler
     public void onBlockFromToEvent(BlockFromToEvent e) {

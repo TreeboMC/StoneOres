@@ -11,11 +11,19 @@ depend: [BentoBox]
 
 commands:
   stoneores:
-    description: StoneOres commands.
+    description: 'StoneOres commands.'
     usage: /<command> <subcommand>
   ores:
-    description: StoneOres commands.
+    description: 'StoneOres commands.'
     usage: /<command> <subcommand>
   value:
-    description: StoneOres bentobox value grab.
+    description: 'StoneOres bentobox value grab.'
     usage: /<command> <subcommand>
+
+permissions:
+  stoneores.updateCheck:
+    description: 'Issues update check when player logs in'
+    default: op
+  stoneores.reload:
+    description: 'Allows a player to reload the plugin config, and to use the query command'
+    default: op

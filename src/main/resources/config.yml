@@ -1,4 +1,8 @@
-yamlCreatedInVersion: '0.11.3'
+version:
+yamlCreatedInVersion: $[project.version]
+apiLink: 'https://api.github.com/repos/TreeboMC/StoneOres/releases/latest'
+releasePage: 'https://github.com/repos/TreeboMC/StoneOres/releases/latest'
+checkUpdates: 'true'
 
 world:
   BSkyBlock_world_the_end:
