@@ -55,9 +55,9 @@ public class UpdateChecker {
                     break;
                 }
 
-                Bukkit.getConsoleSender().sendMessage("Latest " + pl.getDescription().getName() + " Version is " + gitVersion);
-                Bukkit.getConsoleSender().sendMessage("Your " + pl.getDescription().getName() + " Version is " + pl.getDescription().getVersion());
                 if (!gitVersion.equalsIgnoreCase(pl.getDescription().getVersion())) {
+                    Bukkit.getConsoleSender().sendMessage("Latest " + pl.getDescription().getName() + " Version is " + gitVersion);
+                    Bukkit.getConsoleSender().sendMessage("Your " + pl.getDescription().getName() + " Version is " + pl.getDescription().getVersion());
                     Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Please consider updating " + pl.getDescription().getName() + " with version at " + pl.getConfig().getString("releasePage"));
                 }
                 in.close();
@@ -98,9 +98,10 @@ public class UpdateChecker {
                     JSONObject json = (JSONObject) parser.parse(inputLine);
                     gitVersion = json.get("tag_name").toString();
 
-                    Bukkit.getConsoleSender().sendMessage("Latest " + pl.getDescription().getName() + " Version is " + gitVersion);
-                    Bukkit.getConsoleSender().sendMessage("Your " + pl.getDescription().getName() + " Version is " + pl.getDescription().getVersion());
+
                     if (!gitVersion.equalsIgnoreCase(pl.getDescription().getVersion())) {
+                        Bukkit.getConsoleSender().sendMessage("Latest " + pl.getDescription().getName() + " Version is " + gitVersion);
+                        Bukkit.getConsoleSender().sendMessage("Your " + pl.getDescription().getName() + " Version is " + pl.getDescription().getVersion());
                         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Please consider updating " + pl.getDescription().getName() + " with version at " + pl.getConfig().getString("releasePage"));
                     }
                     break;
