@@ -45,10 +45,9 @@ public class UpdateChecker {
                     JSONParser parser = new JSONParser();
                     JSONObject json = (JSONObject) parser.parse(inputLine);
                     gitVersion = json.get("tag_name").toString();
-
-                    p.sendMessage("Latest " + pl.getDescription().getName() + " Version is " + gitVersion);
-                    p.sendMessage("Your " + pl.getDescription().getName() + " Version is " + pl.getDescription().getVersion());
                     if (!gitVersion.equalsIgnoreCase(pl.getDescription().getVersion())) {
+                        p.sendMessage("Latest " + pl.getDescription().getName() + " Version is " + gitVersion);
+                        p.sendMessage("Your " + pl.getDescription().getName() + " Version is " + pl.getDescription().getVersion());
                         p.sendMessage(ChatColor.GOLD + "Please update " + pl.getDescription().getName() + " with version at " + pl.getConfig().getString("releasePage"));
                     }
 
